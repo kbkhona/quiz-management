@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
     const user = new User({
       username,
       password: hash,
-      isAdmin: false, // will be true only after approval
+      isAdmin: asAdmin ? true : false,
       isPendingAdmin: !!asAdmin // if user requested admin, mark pending
     });
     await user.save();
