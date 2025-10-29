@@ -48,39 +48,60 @@ const AdminQuiz = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Create Quiz</h1>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div className="quiz-page">
+      <div className="admin-quiz">
+        <h1>Create Quiz</h1>
+        {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
 
-      <div>
-        <label>Quiz Title</label>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter quiz title" />
-      </div>
+        <div className="quiz-title-input">
+          <label>Quiz Title</label>
+          <input 
+            type="text"
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)} 
+            placeholder="Enter quiz title"
+            required 
+          />
+        </div>
 
-      <h2>Add Question</h2>
-      <QuizForm onSubmit={handleAddQuestion} />
+        <h2>Add Question</h2>
+        <QuizForm onSubmit={handleAddQuestion} />
 
-      <h3>Questions ({questions.length})</h3>
-      <ul>
-        {questions.map((q, i) => (
-          <li key={i} style={{ marginBottom: 8 }}>
-            <strong>{i + 1}. {q.question}</strong> <em>({q.type})</em>
-            <div>Points: {q.points || 1}</div>
-            {q.type === 'MCQ' && (
-              <div>
-                Options: {Array.isArray(q.options) ? q.options.join(', ') : ''}
+        <h3>Questions ({questions.length})</h3>
+        <ul className="question-list">
+          {questions.map((q, i) => (
+            <li key={i} className="question-item">
+              <strong>{i + 1}. {q.question}</strong> 
+              <em>({q.type})</em>
+              <div className="question-meta">
+                <div>Points: {q.points || 1}</div>
+                {q.type === 'MCQ' && (
+                  <div>
+                    Options: {q.options ? ['a', 'b', 'c'].map((k) => q.options[k]).filter(Boolean).join(', ') : ''}
+                  </div>
+                )}
               </div>
-            )}
-            <div>
-              <button onClick={() => handleRemoveQuestion(i)}>Remove</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+              <button 
+                className="remove-question"
+                onClick={() => handleRemoveQuestion(i)}
+                title="Remove question"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
 
-      <div style={{ marginTop: 16 }}>
-        <button onClick={handleSubmitQuiz} disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Quiz'}</button>
+        <div style={{ marginTop: 24 }}>
+          <button 
+            className="button button-primary"
+            onClick={handleSubmitQuiz} 
+            disabled={submitting}
+          >
+            {submitting ? 'Submitting...' : 'Submit Quiz'}
+          </button>
+        </div>
       </div>
     </div>
   );

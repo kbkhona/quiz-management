@@ -1,13 +1,28 @@
 /* index.css - Additional styles for the application */
 
-body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+:root{
+  --bg: #f8f9ff;
+  --card: #ffffff;
+  --text: #2d3748;
+  --text-muted: #718096;
+  --accent: #63b3ed; /* soft blue */
+  --accent-2: #9f7aea; /* soft purple */
+  --border: #e2e8f0;
+  --glass: rgba(255,255,255,0.9);
+  --radius: 12px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}html, body {
+    height: 100%;
 }
 
-h1, h2, h3, h4, h5, h6 {
+body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+    color: var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
@@ -19,30 +34,40 @@ a {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 28px 20px;
 }
 
 .button {
-    padding: 10px 15px;
+    padding: 10px 14px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.2px;
 }
 
 .button-primary {
-    background-color: #007bff;
+    background: linear-gradient(90deg,var(--accent), var(--accent-2));
     color: white;
+    box-shadow: 0 6px 18px rgba(124,92,255,0.12), 0 2px 6px rgba(0,212,255,0.06);
 }
 
 .button-secondary {
-    background-color: #6c757d;
-    color: white;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.04);
 }
 
 .card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 10px 0;
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border-radius: var(--radius);
+        box-shadow: 0 6px 24px rgba(2,6,23,0.6);
+        padding: 20px;
+        margin: 12px 0;
+        border: 1px solid rgba(255,255,255,0.03);
+}
+
+.glass {
+    background: var(--glass);
+    border-radius: var(--radius);
 }

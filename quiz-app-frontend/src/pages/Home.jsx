@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Home = () => {
-	const { login, register } = useContext(AuthContext);
+	const { login, register, user } = useContext(AuthContext);
 
 	// Login form state
 	const [lUsername, setLUsername] = useState('');
@@ -44,53 +44,96 @@ const Home = () => {
 	};
 
 	return (
-		<div className="container" style={{ padding: 20 }}>
-			<div style={{ marginBottom: 20, textAlign: 'center' }}>
-				<h1>Welcome to Quiz App</h1>
-				<p>
-					<Link to="/quiz" className="button">View Available Quizzes</Link>
-				</p>
-			</div>
-			<div style={{ display: 'flex', gap: 40 }}>
-				<div style={{ flex: 1 }} className="card">
-					<h2>Login</h2>
-					{loginError && <p style={{ color: 'red' }}>{loginError}</p>}
-					<form onSubmit={handleLogin}>
-						<div>
-							<label>Username</label>
-							<input value={lUsername} onChange={(e) => setLUsername(e.target.value)} required />
-						</div>
-						<div>
-							<label>Password</label>
-							<input type="password" value={lPassword} onChange={(e) => setLPassword(e.target.value)} required />
-						</div>
-						<button type="submit" className="button button-primary">Login</button>
-					</form>
+		<div className="container home-container">
+			<div className="welcome-section">
+				<h1>Welcome to Quiz App{user ? `, ${user.username}!` : '!'}</h1>
+				<p className="subtitle">Test your knowledge with our interactive quizzes</p>
+				<div className="welcome-actions">
+					<Link to="/quiz" className="button button-primary cta-button">
+						View Available Quizzes
+					</Link>
+					{user?.userType === 'admin' && (
+						<Link to="/admin" className="button button-secondary cta-button">
+							Create New Quiz
+						</Link>
+					)}
 				</div>
+			</div>
 
-				<div style={{ flex: 1 }} className="card">
-					<h2>Register</h2>
-					{registerMsg && <p style={{ color: 'green' }}>{registerMsg}</p>}
-					{registerError && <p style={{ color: 'red' }}>{registerError}</p>}
-					<form onSubmit={handleRegister}>
-						<div>
-							<label>Username</label>
-							<input value={rUsername} onChange={(e) => setRUsername(e.target.value)} required />
-						</div>
-						<div>
-							<label>Password</label>
-							<input type="password" value={rPassword} onChange={(e) => setRPassword(e.target.value)} required />
-						</div>
-						<div>
-							<label>
-								<input type="checkbox" checked={rIsAdmin} onChange={(e) => setRIsAdmin(e.target.checked)} />
-								Request admin access
-							</label>
-						</div>
-						<button type="submit" className="button">Register</button>
-					</form>
+			{!user && (
+				<div className="auth-section">
+					<div className="auth-card card">
+						<h2>Login</h2>
+						{loginError && <p className="error-message">{loginError}</p>}
+						<form onSubmit={handleLogin} className="auth-form">
+							<div className="form-group">
+								<label>Username</label>
+								<input 
+									type="text"
+									value={lUsername} 
+									onChange={(e) => setLUsername(e.target.value)}
+									placeholder="Enter your username"
+									required 
+								/>
+							</div>
+							<div className="form-group">
+								<label>Password</label>
+								<input 
+									type="password" 
+									value={lPassword} 
+									onChange={(e) => setLPassword(e.target.value)}
+									placeholder="Enter your password"
+									required 
+								/>
+							</div>
+							<button type="submit" className="button button-primary">
+								Login
+							</button>
+						</form>
+					</div>
+
+					<div className="auth-card card">
+						<h2>Register</h2>
+						{registerMsg && <p className="success-message">{registerMsg}</p>}
+						{registerError && <p className="error-message">{registerError}</p>}
+						<form onSubmit={handleRegister} className="auth-form">
+							<div className="form-group">
+								<label>Username</label>
+								<input 
+									type="text"
+									value={rUsername} 
+									onChange={(e) => setRUsername(e.target.value)}
+									placeholder="Choose a username"
+									required 
+								/>
+							</div>
+							<div className="form-group">
+								<label>Password</label>
+								<input 
+									type="password" 
+									value={rPassword} 
+									onChange={(e) => setRPassword(e.target.value)}
+									placeholder="Choose a password"
+									required 
+								/>
+							</div>
+							<div className="form-group checkbox-group">
+								<label>
+									<input 
+										type="checkbox" 
+										checked={rIsAdmin} 
+										onChange={(e) => setRIsAdmin(e.target.checked)}
+									/>
+									<span>Request admin access</span>
+								</label>
+							</div>
+							<button type="submit" className="button button-primary">
+								Register
+							</button>
+						</form>
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };

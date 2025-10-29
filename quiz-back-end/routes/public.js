@@ -20,8 +20,9 @@ router.get('/quiz-list', async (req, res) => {
 /**
 GET /api/quiz/:id
 Returns quiz details but WITHOUT correctAnswer fields
+This endpoint is public (no auth required) so guests can take quizzes.
 */
-router.get('/quiz/:id', authMiddleware, async (req, res) => {
+router.get('/quiz/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const quiz = await Quiz.findById(id).lean();

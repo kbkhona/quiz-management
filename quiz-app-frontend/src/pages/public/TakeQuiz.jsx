@@ -55,66 +55,107 @@ const TakeQuiz = () => {
 
   if (result) {
     return (
-      <div style={{ padding: 20 }}>
-        <h2>Result</h2>
-        <p>Score: {result.score} / {result.total}</p>
-        <h3>Details</h3>
-        <ul>
-          {result.details && result.details.map((d, i) => (
-            <li key={i}>
-              Q{d.questionIndex}: {d.correct === null ? 'Not graded' : (d.correct ? 'Correct' : 'Wrong')}
-              {d.correctAnswer != null && <div>Correct answer: {d.correctAnswer}</div>}
-              <div>Your answer: {d.givenAnswer}</div>
-              <div>Points earned: {d.pointsEarned}</div>
-            </li>
-          ))}
-        </ul>
+      <div className="quiz-page">
+        <div className="quiz-results">
+          <h2>Quiz Results</h2>
+          <div className="score-display">
+            Score: {result.score} / {result.total}
+          </div>
+          <h3>Detailed Results</h3>
+          <ul className="result-details">
+            {result.details && result.details.map((d, i) => (
+              <li key={i} className={`result-item ${d.correct ? 'correct' : 'incorrect'}`}>
+                <strong>Question {d.questionIndex + 1}</strong>
+                <div>{d.correct === null ? 'Not graded' : (d.correct ? '✅ Correct' : '❌ Wrong')}</div>
+                <div className="answer-details">
+                  {d.correctAnswer != null && <div>Correct answer: {d.correctAnswer}</div>}
+                  <div>Your answer: {d.givenAnswer}</div>
+                  <div>Points earned: {d.pointsEarned}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="quiz-page take-quiz">
       <h1>{quiz.title}</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
         {quiz.questions.map((q, idx) => (
-          <div key={idx} style={{ marginBottom: 12 }}>
-            <div><strong>{idx + 1}. {q.question}</strong> <em>({q.type})</em></div>
+          <div key={idx} className="question-section">
+            <div className="question-text">
+              <strong>{idx + 1}. {q.question}</strong>
+              <em> ({q.type})</em>
+            </div>
             {q.type === 'MCQ' && (
-              <div>
+              <div className="options-group">
                 {Object.keys(q.options).map((opt, oi) => (
-                  <label key={oi} style={{ display: 'block' }}>
+                  <div key={oi} className="option-item">
                     <input
                       type="radio"
+                      id={`q${idx}-opt${oi}`}
                       name={`q-${idx}`}
                       value={q.options[opt]}
                       checked={answers[idx] === q.options[opt]}
                       onChange={() => handleAnswerChange(idx, q.options[opt])}
-                    /> {q.options[opt]}
-                  </label>
+                    />
+                    <label htmlFor={`q${idx}-opt${oi}`}>{q.options[opt]}</label>
+                  </div>
                 ))}
               </div>
             )}
             {q.type === 'boolean' && (
-              <div>
-                <label>
-                  <input type="radio" name={`q-${idx}`} value="true" checked={answers[idx] === 'true'} onChange={() => handleAnswerChange(idx, 'true')} /> True
-                </label>
-                <label style={{ marginLeft: 8 }}>
-                  <input type="radio" name={`q-${idx}`} value="false" checked={answers[idx] === 'false'} onChange={() => handleAnswerChange(idx, 'false')} /> False
-                </label>
+              <div className="options-group">
+                <div className="option-item">
+                  <input
+                    type="radio"
+                    id={`q${idx}-true`}
+                    name={`q-${idx}`}
+                    value="true"
+                    checked={answers[idx] === 'true'}
+                    onChange={() => handleAnswerChange(idx, 'true')}
+                  />
+                  <label htmlFor={`q${idx}-true`}>True</label>
+                </div>
+                <div className="option-item">
+                  <input
+                    type="radio"
+                    id={`q${idx}-false`}
+                    name={`q-${idx}`}
+                    value="false"
+                    checked={answers[idx] === 'false'}
+                    onChange={() => handleAnswerChange(idx, 'false')}
+                  />
+                  <label htmlFor={`q${idx}-false`}>False</label>
+                </div>
               </div>
             )}
             {q.type === 'text' && (
-              <div>
-                <input type="text" value={answers[idx] || ''} onChange={(e) => handleAnswerChange(idx, e.target.value)} />
+              <div className="form-group">
+                <input
+                  type="text"
+                  value={answers[idx] || ''}
+                  onChange={(e) => handleAnswerChange(idx, e.target.value)}
+                  placeholder="Type your answer here"
+                />
               </div>
             )}
           </div>
         ))}
 
-        <button type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Quiz'}</button>
+        <div style={{ marginTop: 24, textAlign: 'center' }}>
+          <button 
+            type="submit" 
+            className="button button-primary"
+            disabled={submitting}
+          >
+            {submitting ? 'Submitting...' : 'Submit Quiz'}
+          </button>
+        </div>
       </form>
     </div>
   );

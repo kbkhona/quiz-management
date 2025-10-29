@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const QuizForm = ({ onSubmit }) => {
   const [question, setQuestion] = useState('');
   const [type, setType] = useState('MCQ');
-  const [options, setOptions] = useState(['', '']);
+    const [options, setOptions] = useState(['', '', '']);
   const [correctAnswer, setCorrectAnswer] = useState('');
 
   const handleOptionChange = (index, value) => {
@@ -12,21 +12,23 @@ const QuizForm = ({ onSubmit }) => {
     setOptions(newOptions);
   };
 
-  const handleAddOption = () => {
-    setOptions([...options, '']);
-  };
-
-  const handleRemoveOption = (index) => {
-    const newOptions = options.filter((_, i) => i !== index);
-    setOptions(newOptions);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // backend expects options as an object { a, b, c } for MCQ questions
+    let optionsPayload = {};
+    if (type === 'MCQ') {
+      optionsPayload = {
+        a: options[0] || '',
+        b: options[1] || '',
+        c: options[2] || ''
+      };
+    }
+
     const questionData = {
       question,
       type,
-      options,
+      options: optionsPayload,
       correctAnswer,
     };
     onSubmit(questionData);
@@ -36,12 +38,12 @@ const QuizForm = ({ onSubmit }) => {
   const resetForm = () => {
     setQuestion('');
     setType('MCQ');
-    setOptions(['', '']);
+      setOptions(['', '', '']);
     setCorrectAnswer('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="quiz-form" onSubmit={handleSubmit}>
       <div>
         <label>Question:</label>
         <input
@@ -59,21 +61,21 @@ const QuizForm = ({ onSubmit }) => {
           <option value="text">Text</option>
         </select>
       </div>
-      <div>
-        <label>Options:</label>
-        {options.map((option, index) => (
-          <div key={index}>
-            <input
-              type="text"
-              value={option}
-              onChange={(e) => handleOptionChange(index, e.target.value)}
-              required={type === 'MCQ'}
-            />
-            <button type="button" onClick={() => handleRemoveOption(index)}>Remove</button>
-          </div>
-        ))}
-        <button type="button" onClick={handleAddOption}>Add Option</button>
-      </div>
+      {type === 'MCQ' && (
+        <div>
+          <label>Options:</label>
+          {options.map((option, index) => (
+            <div className="option-row" key={index}>
+              <input
+                type="text"
+                value={option}
+                onChange={(e) => handleOptionChange(index, e.target.value)}
+                required
+              />
+            </div>
+          ))}
+        </div>
+      )}
       <div>
         <label>Correct Answer:</label>
         <input

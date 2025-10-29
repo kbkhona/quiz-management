@@ -36,9 +36,9 @@ const QuizList = () => {
   }
 
   return (
-    <div className="quiz-list">
+    <div className="quiz-page">
       <h1>Available Quizzes</h1>
-      <div className="quiz-cards">
+      <div className="quiz-grid">
         {quizzes.map(quiz => (
           <QuizCard key={quiz._id} quiz={quiz} />
         ))}

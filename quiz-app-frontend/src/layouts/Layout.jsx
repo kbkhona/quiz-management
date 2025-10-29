@@ -4,9 +4,11 @@ import Footer from '../components/Footer';
 
 const AuthLayout = ({ children }) => {
   return (
-    <div className="auth-layout">
+    <div className="app-wrapper">
       <Header />
-      <Outlet />
+      <main className="main-content">
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );
