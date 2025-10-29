@@ -21,7 +21,7 @@ router.get('/quiz-list', async (req, res) => {
 GET /api/quiz/:id
 Returns quiz details but WITHOUT correctAnswer fields
 */
-router.get('/quiz/:id', async (req, res) => {
+router.get('/quiz/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const quiz = await Quiz.findById(id).lean();
@@ -62,40 +62,9 @@ body:
 If Authorization: Bearer <token> provided, will associate attempt with that user.
 Returns: { score, total, details: [ { questionIndex, correct, correctAnswer, givenAnswer, pointsEarned } ] }
 */
-router.post('/submit-quiz', authMiddlewareOptional, async (req, res) => {
-  // function defined below to allow optional auth
-});
-
-module.exports = router;
-
-/**
-Helper middleware to allow optional authentication:
-- If Authorization header present, verify and attach req.user (like authMiddleware)
-- If not present or invalid, continue with req.user = null
-*/
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-
-async function authMiddlewareOptional(req, res, next) {
-  const authHeader = req.header('Authorization') || '';
-  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  if (!token) {
-    req.user = null;
-    return next();
-  }
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET || 'secret');
-    const user = await User.findById(payload.id).select('-password');
-    req.user = user || null;
-  } catch (err) {
-    // invalid token: treat as anonymous
-    req.user = null;
-  }
-  return next();
-}
 
 // implement the submit route here (replacing the earlier placeholder)
-router.post('/submit-quiz', authMiddlewareOptional, async (req, res) => {
+router.post('/submit-quiz', authMiddleware, async (req, res) => {
   try {
     const { quizId, answers, takenBy } = req.body;
     if (!quizId || !Array.isArray(answers)) return res.status(400).json({ message: 'quizId and answers array required' });
@@ -174,3 +143,5 @@ router.post('/submit-quiz', authMiddlewareOptional, async (req, res) => {
     return res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
+
+module.exports = router;

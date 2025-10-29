@@ -18,13 +18,23 @@ Quiz document schema:
   createdAt: Date
 }
 */
+const OptionSchema = new Schema({
+  a: { type: String },
+  b: { type: String },
+  c: { type: String }
+}, { _id: false });
+
 const QuestionSchema = new Schema({
   question: { type: String, required: true },
   type: { type: String, enum: ['MCQ', 'text', 'boolean'], required: true },
-  options: [{ type: String }],
+  options: OptionSchema,
   correctAnswer: { type: String, required: true },
   points: { type: Number, default: 1 }
 }, { _id: false });
+
+QuestionSchema.path('options').validate(function(value) {
+  return this.type !== 'MCQ' || (this.type === 'MCQ' && Object.keys(value).length > 0);
+}, 'Options are required for MCQ type questions.');
 
 const QuizSchema = new Schema({
   title: { type: String, required: true, unique: true },

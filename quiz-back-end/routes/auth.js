@@ -7,11 +7,11 @@ const { authMiddleware, adminOnly } = require('../middleware/auth');
 
 /**
 POST /api/register
-body: { username, password, isAdmin } // isAdmin is requested, but will be pending approval
+body: { username, password, asAdmin } // asAdmin is requested, but will be pending approval
 */
 router.post('/register', async (req, res) => {
   try {
-    const { username, password, isAdmin } = req.body;
+    const { username, password, asAdmin } = req.body;
     if (!username || !password) return res.status(400).json({ message: 'username and password required' });
     if (password.length > 12) return res.status(400).json({ message: 'password must be <= 12 characters' });
 
@@ -24,12 +24,12 @@ router.post('/register', async (req, res) => {
     const user = new User({
       username,
       password: hash,
-      isAdmin: false,
-      isPendingAdmin: !!isAdmin // if user requested admin, mark pending
+      isAdmin: false, // will be true only after approval
+      isPendingAdmin: !!asAdmin // if user requested admin, mark pending
     });
     await user.save();
 
-    return res.status(201).json({ message: 'Registered. Admin account requires approval if requested', userId: user._id });
+    return res.status(201).json({ message: 'Registered. Admin account requires approval if requested' });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error', error: err.message });
@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
     const payload = { id: user._id };
     const token = jwt.sign(payload, process.env.JWT_SECRET || 'secret', { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
 
-    return res.json({ token, user: { id: user._id, username: user.username, isAdmin: user.isAdmin, isPendingAdmin: user.isPendingAdmin } });
+    return res.json({ token, user: { username: user.username, isAdmin: user.isAdmin, isPendingAdmin: user.isPendingAdmin } });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error', error: err.message });

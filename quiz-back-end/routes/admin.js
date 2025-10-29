@@ -35,8 +35,12 @@ router.post('/register-quiz', authMiddleware, adminOnly, async (req, res) => {
       const q = questions[i];
       if (!q.question || !q.type) return res.status(400).json({ message: `question and type required for question index ${i}` });
       if (!['MCQ', 'text', 'boolean'].includes(q.type)) return res.status(400).json({ message: `invalid type for question index ${i}` });
-      if (q.type === 'MCQ' && (!Array.isArray(q.options) || q.options.length < 2)) {
-        return res.status(400).json({ message: `MCQ question at index ${i} must have options array with at least 2 items` });
+      if (q.type === 'MCQ' && Object.keys(q.options).length < 3) {
+        return res.status(400).json({ message: `MCQ question at index ${i} must have options array with at least 3 items` });
+      }
+      if(!q.correctAnswer) return res.status(400).json({ message: `correctAnswer is required for question index ${i}` });
+      if(q.type !== 'MCQ') {
+        q.options = {};
       }
     }
 
