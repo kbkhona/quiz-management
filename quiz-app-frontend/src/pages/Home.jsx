@@ -33,7 +33,7 @@ const Home = () => {
 		setRegisterError(null);
 		setRegisterMsg(null);
 		try {
-			const resp = await register({ username: rUsername, password: rPassword, isAdmin: rIsAdmin });
+			const resp = await register({ username: rUsername, password: rPassword, asAdmin: rIsAdmin });
 			setRegisterMsg(resp.message || 'Registered successfully. Please log in.');
 			setRUsername('');
 			setRPassword('');
