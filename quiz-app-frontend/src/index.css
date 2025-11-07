@@ -1,4 +1,5 @@
 /* index.css - Additional styles for the application */
+@import './styles/liveQuiz.css';
 
 :root{
   --bg: #f8f9ff;

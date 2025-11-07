@@ -61,5 +61,31 @@ export const adminRegisterQuiz = async (quizPayload) => {
   return response.data;
 };
 
+// Live Quiz API functions
+export const createLiveQuizRoom = async (quizId, settings = {}) => {
+  const response = await authApi.post(`/live/create-room`, { quizId, settings });
+  return response.data;
+};
+
+export const joinLiveQuizRoom = async (roomCode) => {
+  const response = await authApi.post(`/live/join-room`, { roomCode });
+  return response.data;
+};
+
+export const getActiveRooms = async () => {
+  const response = await authApi.get(`/live/active-rooms`);
+  return response.data;
+};
+
+export const getLiveQuizRoomDetails = async (roomId) => {
+  const response = await authApi.get(`/live/room/${roomId}`);
+  return response.data;
+};
+
+export const leaveLiveQuizRoom = async (roomId) => {
+  const response = await authApi.delete(`/live/room/${roomId}/leave`);
+  return response.data;
+};
+
 export { publicApi, authApi };
 export default authApi;

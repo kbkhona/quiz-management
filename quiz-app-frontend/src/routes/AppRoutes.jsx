@@ -7,6 +7,7 @@ import Home from '../pages/Home';
 import AdminQuiz from '../pages/admin/AdminQuiz';
 import QuizList from '../pages/public/QuizList';
 import TakeQuiz from '../pages/public/TakeQuiz';
+import LiveQuiz from '../pages/LiveQuiz';
 import ProtectedRoute from './ProtectedRoute';
 
 const AppRoutes = () => {
@@ -37,6 +38,18 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <TakeQuiz />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+
+        {/* Live Quiz area */}
+        <Route path="/live-quiz" element={<AuthLayout />}>
+          <Route
+            path=":roomId"
+            element={
+              <ProtectedRoute>
+                <LiveQuiz />
               </ProtectedRoute>
             }
           />
