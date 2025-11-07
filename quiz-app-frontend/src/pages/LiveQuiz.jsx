@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
-import { getLiveQuizRoomDetails, leaveLiveQuizRoom } from '../../api/api';
-import socketService from '../../services/socketService';
+import { AuthContext } from '../context/AuthContext';
+import { getLiveQuizRoomDetails, leaveLiveQuizRoom } from '../api/api';
+import socketService from '../services/socketService';
 
 const LiveQuiz = () => {
   const { roomId } = useParams();

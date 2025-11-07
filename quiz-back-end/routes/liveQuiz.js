@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const LiveQuiz = require('../models/LiveQuiz');
 const Quiz = require('../models/Quiz');
-const auth = require('../middleware/auth');
+const { authMiddleware } = require('../middleware/auth');
 
 /**
  * POST /api/live/create-room
  * Create a new live quiz room
  */
-router.post('/create-room', auth, async (req, res) => {
+router.post('/create-room', authMiddleware, async (req, res) => {
   try {
     const { quizId, settings = {} } = req.body;
     
@@ -71,7 +71,7 @@ router.post('/create-room', auth, async (req, res) => {
  * POST /api/live/join-room
  * Join a live quiz room by room code
  */
-router.post('/join-room', auth, async (req, res) => {
+router.post('/join-room', authMiddleware, async (req, res) => {
   try {
     const { roomCode } = req.body;
     
@@ -128,7 +128,7 @@ router.get('/active-rooms', async (req, res) => {
       participants: { $exists: true, $not: { $size: 0 } }
     })
     .populate('hostId', 'username')
-    .select('title roomCode hostName status participantCount maxParticipants createdAt')
+    .select('title roomCode hostName status participants maxParticipants createdAt')
     .sort({ createdAt: -1 })
     .limit(20);
     
@@ -138,7 +138,7 @@ router.get('/active-rooms', async (req, res) => {
       roomCode: room.roomCode,
       hostName: room.hostName,
       status: room.status,
-      participantCount: room.participants.length,
+      participantCount: room.participants ? room.participants.length : 0,
       maxParticipants: room.maxParticipants,
       createdAt: room.createdAt
     }));
@@ -154,7 +154,7 @@ router.get('/active-rooms', async (req, res) => {
  * GET /api/live/room/:roomId
  * Get details of a specific live quiz room
  */
-router.get('/room/:roomId', auth, async (req, res) => {
+router.get('/room/:roomId', authMiddleware, async (req, res) => {
   try {
     const { roomId } = req.params;
     
@@ -203,7 +203,7 @@ router.get('/room/:roomId', auth, async (req, res) => {
  * DELETE /api/live/room/:roomId/leave
  * Leave a live quiz room
  */
-router.delete('/room/:roomId/leave', auth, async (req, res) => {
+router.delete('/room/:roomId/leave', authMiddleware, async (req, res) => {
   try {
     const { roomId } = req.params;
     

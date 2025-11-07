@@ -1,11 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { joinLiveQuizRoom } from '../api/api';
 
 const LiveQuizCard = ({ room }) => {
+  const navigate = useNavigate();
+
   const handleJoinRoom = async () => {
     try {
       const response = await joinLiveQuizRoom(room.roomCode);
-      window.location.href = `/live-quiz/${response.liveQuiz._id}`;
+      navigate(`/live-quiz/${response.liveQuiz._id}`);
     } catch (error) {
       console.error('Failed to join room:', error);
       alert(error.response?.data?.message || 'Failed to join room');

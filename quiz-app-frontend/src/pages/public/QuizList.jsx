@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchQuizzes, getActiveRooms, createLiveQuizRoom, joinLiveQuizRoom } from '../../api/api';
 import QuizCard from '../../components/QuizCard';
 import LiveQuizCard from '../../components/LiveQuizCard';
@@ -6,6 +7,7 @@ import CreateLiveQuizModal from '../../components/CreateLiveQuizModal';
 import JoinLiveQuizModal from '../../components/JoinLiveQuizModal';
 
 const QuizList = () => {
+  const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [activeRooms, setActiveRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +52,7 @@ const QuizList = () => {
       const response = await createLiveQuizRoom(quizId, settings);
       setShowCreateModal(false);
       // Navigate to the created room
-      window.location.href = `/live-quiz/${response.liveQuiz._id}`;
+      navigate(`/live-quiz/${response.liveQuiz._id}`);
     } catch (error) {
       console.error('Failed to create live quiz:', error);
       alert('Failed to create live quiz room');
@@ -62,7 +64,7 @@ const QuizList = () => {
       const response = await joinLiveQuizRoom(roomCode);
       setShowJoinModal(false);
       // Navigate to the joined room
-      window.location.href = `/live-quiz/${response.liveQuiz._id}`;
+      navigate(`/live-quiz/${response.liveQuiz._id}`);
     } catch (error) {
       console.error('Failed to join live quiz:', error);
       alert(error.response?.data?.message || 'Failed to join live quiz room');
